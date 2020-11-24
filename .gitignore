@@ -1,0 +1,11 @@
+*.egg
+*.egg-info
+.eggs
+dist
+build
+venv/
+env/
+__pycache__/
+
+data.txt
+pass.txt
