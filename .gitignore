@@ -9,3 +9,6 @@ __pycache__/
 
 data.txt
 pass.txt
+
+SOARback/db/SOARback_interventions.db
+SOARback/db/SOARback_users.db
