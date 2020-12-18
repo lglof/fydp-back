@@ -7,6 +7,7 @@ from definitions import ROOT_DIR
 
 db = os.path.join(ROOT_DIR, 'SOARback/db/SOARback_interventions.db')
 interventionsTable = 'PERFORMED_INTERVENTIONS'
+typesTable = 'INTERVENTION_TYPES'
 allColumns = '(id, type, worker, time, direction, pain_level, satisfaction_level)'
 insertColumns = '(type, worker, time, direction, pain_level, satisfaction_level)'
 
@@ -30,9 +31,15 @@ def addEntry(contents):
     return 1
 
 def readLines(num):
-    query = (f'SELECT *'
-    + f' from {interventionsTable}'
-    + f' ORDER BY datetime(time) DESC LIMIT {num}')
+    query = (
+        f'SELECT {interventionsTable}.id, {typesTable}.name,'
+        + f' {interventionsTable}.worker, {interventionsTable}.time,'
+        + f'{interventionsTable}.direction, {interventionsTable}.pain_level,'
+        + f'{interventionsTable}.satisfaction_level'
+        + f' from {interventionsTable}'
+        + f' JOIN {typesTable} ON {interventionsTable}.type={typesTable}.id'
+        + f' ORDER BY datetime({interventionsTable}.time) DESC LIMIT {num}'
+    )
     conn = connect()
     out = conn.execute(query)
     formatted = []
@@ -40,5 +47,4 @@ def readLines(num):
         element = [row[0], row[1], row[2], row[3], row[4], row[5], row[6]]
         formatted.append(element)
     disconnect(conn)
-    print(formatted)
     return formatted
