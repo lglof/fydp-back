@@ -12,10 +12,10 @@ else
             id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
             name TEXT NOT NULL);
         CREATE TABLE PERFORMED_INTERVENTIONS(
-            id INTEGER PRIMARY KEY NOT NULL,
+            id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
             type INTEGER NOT NULL,
             worker TEXT NOT NULL,
-            time DATETIME NOT NULL,
+            time TEXT NOT NULL,
             direction TEXT,
             pain_level INTEGER,
             satisfaction_level INTEGER,
@@ -46,7 +46,7 @@ else
             edit INTEGER NOT NULL
         );
         CREATE TABLE USERS(
-            id INTEGER PRIMARY KEY NOT NULL,
+            id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
             friendly TEXT NOT NULL,
             password INTEGER NOT NULL,
             user_type INTEGER NOT NULL,
