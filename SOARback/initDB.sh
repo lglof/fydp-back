@@ -48,7 +48,8 @@ else
         CREATE TABLE USERS(
             id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
             friendly TEXT NOT NULL,
-            password INTEGER NOT NULL,
+            salt blob NOT NULL,
+            key blob NOT NULL,
             user_type INTEGER NOT NULL,
             FOREIGN KEY (user_type)
                 REFERENCES USER_TYPES (id)

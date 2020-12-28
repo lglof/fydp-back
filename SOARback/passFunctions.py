@@ -1,11 +1,14 @@
 import os
 import hashlib
 import sys
+import sqlite3
 from definitions import ROOT_DIR
 
-passFile = os.path.join(ROOT_DIR, 'pass.txt')
+db = os.path.join(ROOT_DIR, 'SOARback/db/SOARback_users.db')
+usersTable = 'USERS'
+typesTable = 'USER_TYPES'
 
-def generatePassword(password):
+def generatePassword(user_type, friendly, password):
     salt = os.urandom(32)
     key = hashlib.pbkdf2_hmac(
         'sha256',
@@ -13,29 +16,31 @@ def generatePassword(password):
         salt,
         100000
     )
-
-    out = salt + key
-    open(passFile, 'w+').close()
-    with open(passFile, "wb") as passwordFile:
-        passwordFile.write(out)
+    conn = sqlite3.connect(db)
+    query = (f'INSERT INTO {usersTable} '
+        + f'(friendly, salt, key, user_type)'
+        + f' VALUES ("{friendly}", "{salt.hex()}", "{key.hex()}", "{user_type}")')
+    conn.execute(query)
+    conn.commit()
+    conn.close()
     return 1
 
-# both pass and key are 32 bytes
-def verify(passwordToCheck):
-    with open(passFile, 'rb') as passfile:
-        salt = passfile.read(32)
-        key = passfile.read(32)
-
-    HpasswordToCheck = hashlib.pbkdf2_hmac(
+def verifyPassword(friendly, password):
+    conn = sqlite3.connect(db)
+    out = conn.execute(f'SELECT key, salt from USERS where friendly="{friendly}"')
+    for row in out: 
+        realKey = row[0]
+        salt = row[1]
+    salt = bytes.fromhex(salt)
+    keyToCheck = hashlib.pbkdf2_hmac(
         'sha256',
-        passwordToCheck.encode('utf-8'),
-        salt, 
+        password.encode('utf-8'),
+        salt,
         100000
-    )
-
-    if HpasswordToCheck == key:
+    ).hex()
+    if keyToCheck == realKey:
         return True
     else:
         return False
 
-
+# def getUserType():
