@@ -41,23 +41,33 @@ def test_verifyPassword():
     user_type = 1
     password = 'callie'
 
-    conn = sqlite3.connect(db)
-    conn.execute("DELETE FROM USERS")
-    conn.commit()
-    conn.close()
+    connection_start('USERS')
 
+    passFunctions.generatePassword(1, 'satty', 'cat')
+    passFunctions.generatePassword(2, 'lily', 'pig')
     passFunctions.generatePassword(user_type, friendly, password)
     check = passFunctions.verifyPassword(friendly, password)
-
     assert check == True
 
     check = passFunctions.verifyPassword(friendly, 'deadbeef')
-     
     assert check == False
     
+    connection_start('USERS')
+
+def test_getUserPermissions():
+    friendly = 'calliope'
+    user_type = 2
+    password = 'callie'
+
+    connection_start('USERS')
+    passFunctions.generatePassword(user_type, friendly, password)
+
+    view, edit = passFunctions.getUserPermissions(friendly)
+
+    assert view == 0
+    assert edit == 1
+
     conn = sqlite3.connect(db)
     conn.execute("DELETE FROM USERS")
     conn.commit()
     conn.close()
-
-    # don't forget to check the hex

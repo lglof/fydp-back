@@ -43,4 +43,15 @@ def verifyPassword(friendly, password):
     else:
         return False
 
-# def getUserType():
+def getUserPermissions(friendly):
+    query = (f'SELECT USER_TYPES.edit, USER_TYPES.view '
+        + f'FROM USERS JOIN USER_TYPES ON USERS.user_type=USER_TYPES.id '
+        + f'WHERE USERS.friendly="{friendly}"')
+
+    conn = sqlite3.connect(db)
+    print(query)
+    out = conn.execute(query)
+    for row in out:
+        edit = row[0]
+        view = row[1]
+    return view, edit
