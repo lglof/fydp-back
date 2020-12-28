@@ -9,7 +9,7 @@ else
     echo "SOARback interventions db does not already exist, creating at $interventions_dbFile"
     sqlite3 $interventions_dbFile "
         CREATE TABLE INTERVENTION_TYPES(
-            id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
+            id INTEGER PRIMARY KEY NOT NULL,
             name TEXT NOT NULL);
         CREATE TABLE PERFORMED_INTERVENTIONS(
             id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
@@ -25,12 +25,12 @@ else
         "
     echo "created tables INTERVENTION_TYPES and PERFORMED_INTERVENTIONS"
     sqlite3 $interventions_dbFile "
-        INSERT INTO INTERVENTION_TYPES(name)
-            VALUES('shift');
-        INSERT INTO INTERVENTION_TYPES(name)
-            VALUES('barrier cream');
-        INSERT INTO INTERVENTION_TYPES(name)
-            VALUES('duoderm');
+        INSERT INTO INTERVENTION_TYPES(id, name)
+            VALUES(1, 'shift');
+        INSERT INTO INTERVENTION_TYPES(id, name)
+            VALUES(2, 'barrier cream');
+        INSERT INTO INTERVENTION_TYPES(id, name)
+            VALUES(3, 'duoderm');
     "
 fi
 

@@ -1,5 +1,6 @@
 from SOARback import interventionFunctions
 import sqlite3
+import json
 
 db = 'SOARback/db/SOARback_interventions.db'
 test_data = [2, 'alice', '2020-12-18 12:12:12', 'left', 3, 0]
@@ -28,6 +29,17 @@ def test_addEntry():
     assert satisfaction == test_data[5]
     connection_end(conn, 'PERFORMED_INTERVENTIONS')
 
+def test_getInterventions():
+    connection_start('INTERVENTION_TYPES')
+    conn = interventionFunctions.connect()
+    conn.execute('INSERT INTO INTERVENTION_TYPES(id, name) VALUES(1, \'shift\');')
+    conn.execute('INSERT INTO INTERVENTION_TYPES(id, name) VALUES(2, \'barrier cream\');')
+    conn.execute('INSERT INTO INTERVENTION_TYPES(id, name) VALUES(3, \'duoderm\');')
+    conn.commit()
+    conn.close()
+    types = interventionFunctions.getInterventionTypes()
+    assert types == [[1, 'shift'], [2, 'barrier cream'], [3, 'duoderm']]
+
 def test_readLines():
     connection_start('PERFORMED_INTERVENTIONS')
     interventionFunctions.addEntry([2, 'd', '2020-12-20 12:12:12.000', 'left', 3, 0])
@@ -35,5 +47,7 @@ def test_readLines():
     interventionFunctions.addEntry([2, 'c', '2020-12-18 12:12:13.000', 'left', 3, 0])
     interventionFunctions.addEntry([2, 'a', '2020-12-16 12:12:11.000', 'left', 3, 0])
     out = interventionFunctions.readLines(3)
-    assert out[2][2] ==  'b'
+    conn = interventionFunctions.connect()
+    connection_end(conn, 'PERFORMED_INTERVENTIONS')
+    assert out[1][2] ==  'c'
     assert out[1][3] == '2020-12-18 12:12:13.000'

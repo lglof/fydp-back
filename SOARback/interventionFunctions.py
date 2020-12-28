@@ -1,9 +1,7 @@
-# - read # of lines
-# - add a line
-
 import sqlite3
 import os
 from definitions import ROOT_DIR
+import json
 
 db = os.path.join(ROOT_DIR, 'SOARback/db/SOARback_interventions.db')
 interventionsTable = 'PERFORMED_INTERVENTIONS'
@@ -36,7 +34,7 @@ def readLines(num):
         + f' {interventionsTable}.worker, {interventionsTable}.time,'
         + f'{interventionsTable}.direction, {interventionsTable}.pain_level,'
         + f'{interventionsTable}.satisfaction_level'
-        + f' from {interventionsTable}'
+        + f' FROM {interventionsTable}'
         + f' JOIN {typesTable} ON {interventionsTable}.type={typesTable}.id'
         + f' ORDER BY datetime({interventionsTable}.time) DESC LIMIT {num}'
     )
@@ -45,6 +43,19 @@ def readLines(num):
     formatted = []
     for row in out:
         element = [row[0], row[1], row[2], row[3], row[4], row[5], row[6]]
+        print(element)
         formatted.append(element)
     disconnect(conn)
     return formatted
+
+def getInterventionTypes():
+    query = (
+        f'SELECT * FROM {typesTable}'
+    )
+    conn = connect()
+    out = conn.execute(query)
+    results = []
+    for row in out:
+        results.append([row[0], row[1]])
+    print(results)
+    return results
