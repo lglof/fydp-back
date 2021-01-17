@@ -3,7 +3,7 @@ from setuptools import find_packages, setup
 setup(
     name='SOARback',
     packages=find_packages(include=['SOARback']),
-    version='0.1.2',
+    version='1.0.0',
     description='SYDE461/462 Group 03 Backend',
     author='lglof, asilverfox, derek',
     license='MIT',
