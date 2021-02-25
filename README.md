@@ -13,3 +13,6 @@ then to install the package:
   `pip install /path/to/.whl`
   the .whl should be in `fydp-back/dist/`
   Just make sure you get the right version when getting the wheel file
+
+- why's `rfidFunctions.py` almost all commented out?
+  Since I removed the hardware dependant stuff so that testing works ok.

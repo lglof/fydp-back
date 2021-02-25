@@ -2,13 +2,18 @@ import os
 import hashlib
 import sys
 import sqlite3
+
 from definitions import ROOT_DIR
+from SOARback.rfidFunctions import getRFIDData
 
 db = os.path.join(ROOT_DIR, 'SOARback/db/SOARback_users.db')
 usersTable = 'USERS'
 typesTable = 'USER_TYPES'
 
-def generatePassword(user_type, friendly, password):
+def generatePassword(user_type):
+    rfidData = getRFIDData()
+    friendly = rfidData[0]
+    password = rfidData[1]
     salt = os.urandom(32)
     key = hashlib.pbkdf2_hmac(
         'sha256',
@@ -25,8 +30,11 @@ def generatePassword(user_type, friendly, password):
     conn.close()
     return 1
 
-def verifyPassword(friendly, password):
+def verifyPassword():
     conn = sqlite3.connect(db)
+    rfidData = getRFIDData()
+    friendly = rfidData[0]
+    password = rfidData[1]
     out = conn.execute(f'SELECT key, salt from USERS where friendly="{friendly}"')
     for row in out: 
         realKey = row[0]
@@ -49,7 +57,6 @@ def getUserPermissions(friendly):
         + f'WHERE USERS.friendly="{friendly}"')
 
     conn = sqlite3.connect(db)
-    print(query)
     out = conn.execute(query)
     for row in out:
         edit = row[0]
